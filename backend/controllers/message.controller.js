@@ -3,7 +3,7 @@ import Message from "../models/message.model.js";
 
 export const getMessages = async (req, res) => {
 	try {
-		const { id: userToChatId } = req.parms;
+		const { id: userToChatId } = req.params;
 		const senderId = req.user._id;
 		const conversation = await Conversation.findOne({
 			participants: { $all: [senderId, userToChatId] },
@@ -11,7 +11,7 @@ export const getMessages = async (req, res) => {
 		if (!conversation) {
 			return res.status(200).json([]);
 		}
-        const messages = consversation.messages;
+        const messages = conversation.messages;
 		res.status(200).json(messages);
 	} catch (error) {
 		console.log(`Error in get Messages controller: `, error.message);
@@ -22,7 +22,7 @@ export const getMessages = async (req, res) => {
 export const sendMessage = async (req, res) => {
 	try {
 		const { message } = req.body;
-		const { id: receiverId } = req.parms;
+		const { id: receiverId } = req.params;
 		const senderId = req.user._id;
 		let conversation = await Conversation.findOne({
 			participants: { $all: [senderId, receiverId] },
